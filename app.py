@@ -141,4 +141,5 @@ def unauthorized_handler():
     return render_template('not_logged_in.html')
 
 if __name__ == '__main__':
-   app.run(debug = True, host ="0.0.0.0")
+    from os import environ
+    app.run(debug=False, port=environ.get("PORT", 5000))
