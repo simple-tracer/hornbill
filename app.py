@@ -27,9 +27,7 @@ login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
 
 f = Fernet(os.getenv("KEY"))
-u="poder"
-print(f.encrypt(u.encode()))
- 
+
 users = {}
 
 table = Airtable(os.getenv("AIRTABLE_BASE"),
@@ -83,10 +81,6 @@ def login():
         return render_template('login.html')
 
     email = request.form['email']
-
-    print(f.decrypt(users[email]['password'].encode()))
-
-    print(users[email]['password'])
 
     if email not in users:
 
@@ -145,3 +139,6 @@ def home():
 @login_manager.unauthorized_handler
 def unauthorized_handler():
     return render_template('not_logged_in.html')
+
+if __name__ == '__main__':
+   app.run(debug = True, host ="0.0.0.0")
