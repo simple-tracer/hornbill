@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Find contacts - Hornbill</title>
+
+    <link rel="stylesheet" href="/static/simple-grid.css" />
+    <link
+      rel="stylesheet"
+      href="https://watercss.kognise.dev/dist/light.css"
+    />
+    <!-- import the webpage's javascript file -->
+    <script src="/script.js" defer></script>
+  </head>
+  <body style="max-width: 100vw;">
+    <div class="container center">
+      <div class="row">
+        <div class="col-2"></div>
+        <div class="col-8">
+          <h3 style="margin-block-end: 4px;">Hornbill</h3>
+          <h1 style="margin-block-end: 15px;">Find Contacts</h1>
+          <form action='getContacts' method='POST'>
+            <input type='text' name='idNo' id='idNo' placeholder='ID Number' style="margin-bottom: 15px;"/>
+            <input type='submit' name='submit' style="width: 20%;"/>
+           </form>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

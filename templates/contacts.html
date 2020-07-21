@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Contacts - Hornbill</title>
+
+    <link rel="stylesheet" href="/static/simple-grid.css" />
+    <link
+      rel="stylesheet"
+      href="https://watercss.kognise.dev/dist/light.css"
+    />
+    <script src="/script.js" defer></script>
+  </head>
+  <body style="max-width: 100vw;">
+    <div class="container center">
+      <div class="row">
+        <div class="col-2"></div>
+        <div class="col-8">
+          <h3 style="margin-block-end: 4px;">
+            The following contacts were identified for
+          </h3>
+          <h1 style="margin-block-end: 15px;">{{ id }}</h1>
+          {% for i in contacts %}
+          <details>
+            <summary>{{ i['Full Name'] }}</summary>
+            <p>
+              <b>ID Number: </b>{{ i['ID Number'] }}
+              <br>
+              <b>Street Address: </b>{{ i['Street Address'] }}
+              <br>
+              <b>Phone Number: </b>{{ i['Phone Number'] }}
+            </p>
+          </details>
+          {% endfor %}
+          <a href="/">
+            <button style="margin-top: 15px;">Return home.</button>
+          </a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

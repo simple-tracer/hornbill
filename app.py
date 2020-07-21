@@ -1,4 +1,6 @@
-from flask import Flask, request, redirect, url_for
+from flask import Flask, request, redirect, url_for, render_template
+
+from cryptography.fernet import Fernet
 
 import flask_login
 
@@ -12,6 +14,8 @@ import urllib
 
 from urllib.request import urlopen, Request
 
+import ast 
+
 load_dotenv()
 
 app = Flask(__name__)
@@ -21,6 +25,10 @@ app.secret_key = 'super secret string'  # Change this!
 login_manager = flask_login.LoginManager()
 
 login_manager.init_app(app)
+
+f = Fernet('***REMOVED***')
+u="poder"
+print(f.encrypt(u.encode()))
 
 users = {}
 
@@ -72,21 +80,19 @@ def login():
 
     if request.method == 'GET':
 
-        return '''
-               <form action='login' method='POST'>
-                <input type='text' name='email' id='email' placeholder='email'/>
-                <input type='password' name='password' id='password' placeholder='password'/>
-                <input type='submit' name='submit'/>
-               </form>
-               '''
+        return render_template('login.html')
 
     email = request.form['email']
+
+    print(f.decrypt(users[email]['password'].encode()))
+
+    print(users[email]['password'])
 
     if email not in users:
 
         return 'Bad login'
 
-    elif request.form['password'] == users[email]['password']:
+    elif request.form['password'] == f.decrypt(users[email]['password'].encode()).decode():
 
         user = User()
         user.id = email
@@ -99,7 +105,7 @@ def login():
 @app.route('/logout')
 def logout():
     flask_login.logout_user()
-    return 'Logged out<br><a href = "/login">Log in again.</a>'
+    return render_template('logout.html')
 
 
 @app.route('/getContacts', methods=['GET', 'POST'])
@@ -108,18 +114,24 @@ def getContacts():
 
     if request.method == 'GET':
 
-        return 'Logged in as: ' + flask_login.current_user.id + '''
-               <br> 
-               <form action='getContacts' method='POST'>
-                <input type='text' name='idNo' id='idNo' placeholder='id number'/>
-                <input type='submit' name='submit'/>
-               </form>
-               '''
+        return render_template('find_contacts.html')
 
+    print(request.form['idNo'])
     url = 'https://contact-tracer-api.herokuapp.com/find-contacts'
     values = {"ID Number":request.form['idNo']}
 
     data = urllib.parse.urlencode(values).encode("utf-8")
+    req = Request(url, data)
+    response = urlopen(req)
+    return render_template('contacts.html', contacts=ast.literal_eval(response.read().decode("utf-8")),id=request.form['idNo']) 
+
+@app.route('/smsContacts', methods=['POST'])
+@flask_login.login_required
+def smsContacts():
+    url = 'https://contact-tracer-api.herokuapp.com/sms-contacts'
+    values = request.form['contacts']
+    print(values)
+    data = urllib.parse.quote(values).encode('utf-8')
     req = Request(url, data)
     response = urlopen(req)
     return response.read()
@@ -127,10 +139,9 @@ def getContacts():
 @app.route('/', methods=['GET'])
 @flask_login.login_required
 def home():
-
-    return '<a href = "/getContacts#">Fetch Contacts.</a><br><a href = "/logout">Log out.</a>'
+    return render_template('home.html')
 
 
 @login_manager.unauthorized_handler
 def unauthorized_handler():
-    return 'Unauthorized' + '<br><br><a href = "/login#">Login in here.</a>'
+    return render_template('not_logged_in.html')
