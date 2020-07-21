@@ -20,16 +20,16 @@ load_dotenv()
 
 app = Flask(__name__)
 
-app.secret_key = 'super secret string'  # Change this!
+app.secret_key = os.getenv("KEY")  # Change this!
 
 login_manager = flask_login.LoginManager()
 
 login_manager.init_app(app)
 
-f = Fernet('***REMOVED***')
+f = Fernet(os.getenv("KEY"))
 u="poder"
 print(f.encrypt(u.encode()))
-
+ 
 users = {}
 
 table = Airtable(os.getenv("AIRTABLE_BASE_KEY"),
