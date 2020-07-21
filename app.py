@@ -32,8 +32,8 @@ print(f.encrypt(u.encode()))
  
 users = {}
 
-table = Airtable(os.getenv("AIRTABLE_BASE_KEY"),
-                 'Admins', api_key=os.getenv("AIRTABLE_API_KEY"))
+table = Airtable(os.getenv("AIRTABLE_BASE"),
+                 'Admins', os.getenv("AIRTABLE_KEY"))
 
 
 class User(flask_login.UserMixin):
