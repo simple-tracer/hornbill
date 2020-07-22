@@ -35,7 +35,7 @@
             </p>
           </details>
           {% endfor %}
-          <a href="/issueqo?numbers=[{% for i in contacts %}'{{ i['Phone Number'] | replace('+','%2B') }}',{% endfor %}]&contacts={{ contacts }}">
+          <a href="/issueqo?numbers=[{% for i in contacts %}'{{ i['fields']['Phone Number'] | replace('+','%2B') }}',{% endfor %}]&contacts={{ contacts }}">
             <button style="margin-top: 15px;">Issue Quarantine Orders</button>
           </a>
           <br>
