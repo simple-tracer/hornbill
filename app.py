@@ -14,7 +14,7 @@ import urllib
 
 from urllib.request import urlopen, Request
 
-import ast 
+import ast
 
 import json
 
@@ -46,7 +46,8 @@ table = Airtable(os.getenv("AIRTABLE_BASE"),
                  'Admins', os.getenv("AIRTABLE_KEY"))
 
 users_table = Airtable(os.getenv("AIRTABLE_BASE"),
-                 'Users', os.getenv("AIRTABLE_KEY"))
+                       'Users', os.getenv("AIRTABLE_KEY"))
+
 
 class User(flask_login.UserMixin):
     pass
@@ -121,23 +122,23 @@ def logout():
 def getContacts():
 
     if request.method == 'GET':
-
         return render_template('find_contacts.html')
 
-    print(request.form['idNo'])
-    url = os.getenv("API_URL")+'find-contacts'
-    values = {"ID Number":request.form['idNo']}
-    data = urllib.parse.urlencode(values).encode("utf-8")
-    req = Request(url, data)
-    response = urlopen(req)
-    return render_template('contacts.html', contacts=ast.literal_eval(response.read().decode("utf-8")),id=request.form['idNo']) 
+    list1 = users_table.get_all(
+        filterByFormula='IF(FIND("' + request.form['idNo'] + '",Contacts)>0,TRUE(),FALSE())')
+    list2 = users_table.get_all(
+        filterByFormula='IF(FIND("' + request.form['idNo'] + '",{ID Number})>0,TRUE(),FALSE())')
+    list1.extend(list2)
+    return render_template('contacts.html', contacts=list1, id=request.form['idNo'])
+
 
 @app.route('/issueqo', methods=['POST', 'GET'])
 @flask_login.login_required
 def issueqo():
-    print(request.args.get('numbers').replace(",]","]"))
-    numbers = ast.literal_eval(request.args.get('numbers').replace(",]","]"))
-    bindings = list(map(lambda number: json.dumps({'binding_type': 'sms', 'address': number}), numbers))
+    print(request.args.get('numbers').replace(",]", "]"))
+    numbers = ast.literal_eval(request.args.get('numbers').replace(",]", "]"))
+    bindings = list(map(lambda number: json.dumps(
+        {'binding_type': 'sms', 'address': number}), numbers))
     print("=====> To Bindings :>", bindings, "<: =====")
     notification = client.notify.services(NOTIFY_SERVICE_SID).notifications.create(
         to_binding=bindings,
@@ -145,26 +146,17 @@ def issueqo():
     )
     print(notification.body)
     for i in ast.literal_eval(request.args.get('contacts')):
-        users_table.update_by_field('ID Number', i["ID Number"], {'Quarantine Starting Date': datetime.today().strftime('%Y-%m-%d')})
-    
+        users_table.update_by_field('ID Number', i["ID Number"], {
+                                    'Quarantine Starting Date': datetime.today().strftime('%Y-%m-%d')})
+
     return render_template('ordersplaced.html', contacts=ast.literal_eval(request.args.get('contacts')))
 
-
-@app.route('/smsContacts', methods=['POST'])
-@flask_login.login_required
-def smsContacts():
-    url = os.getenv("API_URL")+'sms-contacts'
-    values = request.form['contacts']
-    print(values)
-    data = urllib.parse.quote(values).encode('utf-8')
-    req = Request(url, data)
-    response = urlopen(req)
-    return response.read()
 
 @app.route('/', methods=['GET'])
 @flask_login.login_required
 def home():
     return render_template('home.html')
+
 
 @app.route('/quarantined', methods=['GET'])
 @flask_login.login_required
@@ -175,6 +167,7 @@ def quarantined():
 @login_manager.unauthorized_handler
 def unauthorized_handler():
     return render_template('not_logged_in.html')
+
 
 if __name__ == '__main__':
     from os import environ

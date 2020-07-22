@@ -25,13 +25,13 @@
           <h1 style="margin-block-end: 15px;">{{ id }}</h1>
           {% for i in contacts %}
           <details>
-            <summary>{{ i['Full Name'] }}</summary>
+            <summary>{{ i['fields']['Full Name'] }}</summary>
             <p>
-              <b>ID Number: </b>{{ i['ID Number'] }}
+              <b>ID Number: </b>{{ i['fields']['ID Number'] }}
               <br>
-              <b>Street Address: </b>{{ i['Street Address'] }}
+              <b>Street Address: </b>{{ i['fields']['Street Address'] }}
               <br>
-              <b>Phone Number: </b>{{ i['Phone Number'] }}
+              <b>Phone Number: </b>{{ i['fields']['Phone Number'] }}
             </p>
           </details>
           {% endfor %}
