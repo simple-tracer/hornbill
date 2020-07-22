@@ -16,6 +16,12 @@ from urllib.request import urlopen, Request
 
 import ast 
 
+import json
+
+from twilio.rest import Client
+
+from datetime import datetime
+
 load_dotenv()
 
 app = Flask(__name__)
@@ -28,11 +34,19 @@ login_manager.init_app(app)
 
 f = Fernet(os.getenv("KEY"))
 
+ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID')
+AUTH_TOKEN = os.getenv('TWILIO_AUTH_TOKEN')
+NOTIFY_SERVICE_SID = os.getenv('TWILIO_NOTIFY_SERVICE_SID')
+
+client = Client(ACCOUNT_SID, AUTH_TOKEN)
+
 users = {}
 
 table = Airtable(os.getenv("AIRTABLE_BASE"),
                  'Admins', os.getenv("AIRTABLE_KEY"))
 
+users_table = Airtable(os.getenv("AIRTABLE_BASE"),
+                 'Users', os.getenv("AIRTABLE_KEY"))
 
 class User(flask_login.UserMixin):
     pass
@@ -113,11 +127,28 @@ def getContacts():
     print(request.form['idNo'])
     url = 'https://contact-tracer-api.herokuapp.com/find-contacts'
     values = {"ID Number":request.form['idNo']}
-
     data = urllib.parse.urlencode(values).encode("utf-8")
     req = Request(url, data)
     response = urlopen(req)
     return render_template('contacts.html', contacts=ast.literal_eval(response.read().decode("utf-8")),id=request.form['idNo']) 
+
+@app.route('/issueqo', methods=['POST', 'GET'])
+@flask_login.login_required
+def issueqo():
+    print(request.args.get('numbers').replace(",]","]"))
+    numbers = ast.literal_eval(request.args.get('numbers').replace(",]","]"))
+    bindings = list(map(lambda number: json.dumps({'binding_type': 'sms', 'address': number}), numbers))
+    print("=====> To Bindings :>", bindings, "<: =====")
+    notification = client.notify.services(NOTIFY_SERVICE_SID).notifications.create(
+        to_binding=bindings,
+        body="test"
+    )
+    print(notification.body)
+    for i in ast.literal_eval(request.args.get('contacts')):
+        users_table.update_by_field('ID Number', i["ID Number"], {'Quarantine Starting Date': datetime.today().strftime('%Y-%m-%d')})
+    
+    return render_template('ordersplaced.html', contacts=ast.literal_eval(request.args.get('contacts')))
+
 
 @app.route('/smsContacts', methods=['POST'])
 @flask_login.login_required
@@ -134,6 +165,11 @@ def smsContacts():
 @flask_login.login_required
 def home():
     return render_template('home.html')
+
+@app.route('/quarantined', methods=['GET'])
+@flask_login.login_required
+def quarantined():
+    return render_template('quarantined.html', contacts=users_table.search('Quarantined?', '1'))
 
 
 @login_manager.unauthorized_handler

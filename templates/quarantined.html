@@ -20,25 +20,21 @@
         <div class="col-2"></div>
         <div class="col-8">
           <h3 style="margin-block-end: 4px;">
-            The following contacts were identified for
+            The following are serving a
           </h3>
-          <h1 style="margin-block-end: 15px;">{{ id }}</h1>
+          <h1 style="margin-block-end: 15px;">Quarantine Order</h1>
           {% for i in contacts %}
           <details>
-            <summary>{{ i['Full Name'] }}</summary>
+            <summary>{{ i['fields']['Full Name'] }}</summary>
             <p>
-              <b>ID Number: </b>{{ i['ID Number'] }}
+              <b>ID Number: </b>{{ i['fields']['ID Number'] }}
               <br>
-              <b>Street Address: </b>{{ i['Street Address'] }}
+              <b>Street Address: </b>{{ i['fields']['Street Address'] }}
               <br>
-              <b>Phone Number: </b>{{ i['Phone Number'] }}
+              <b>Phone Number: </b>{{ i['fields']['Phone Number'] }}
             </p>
           </details>
           {% endfor %}
-          <a href="/issueqo?numbers=[{% for i in contacts %}'{{ i['Phone Number'] | replace('+','%2B') }}',{% endfor %}]&contacts={{ contacts }}">
-            <button style="margin-top: 15px;">Issue Quarantine Orders</button>
-          </a>
-          <br>
           <a href="/">
             <button style="margin-top: 15px;">Return home.</button>
           </a>
