@@ -125,7 +125,7 @@ def getContacts():
         return render_template('find_contacts.html')
 
     print(request.form['idNo'])
-    url = 'https://contact-tracer-api.herokuapp.com/find-contacts'
+    url = os.getenv("API_URL")+'find-contacts'
     values = {"ID Number":request.form['idNo']}
     data = urllib.parse.urlencode(values).encode("utf-8")
     req = Request(url, data)
@@ -153,7 +153,7 @@ def issueqo():
 @app.route('/smsContacts', methods=['POST'])
 @flask_login.login_required
 def smsContacts():
-    url = 'https://contact-tracer-api.herokuapp.com/sms-contacts'
+    url = os.getenv("API_URL")+'sms-contacts'
     values = request.form['contacts']
     print(values)
     data = urllib.parse.quote(values).encode('utf-8')
@@ -169,7 +169,7 @@ def home():
 @app.route('/quarantined', methods=['GET'])
 @flask_login.login_required
 def quarantined():
-    return render_template('quarantined.html', contacts=users_table.search('Quarantined?', '1'))
+    return render_template('quarantined.html', people=users_table.search('Quarantined?', '1'))
 
 
 @login_manager.unauthorized_handler
