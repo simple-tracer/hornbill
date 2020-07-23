@@ -151,7 +151,7 @@ def issueqo():
     )
     print(notification.body)
     for i in ast.literal_eval(request.args.get('contacts')):
-        users_table.update_by_field('ID Number', i["ID Number"], {
+        users_table.update_by_field('ID Number', i["fields"]["ID Number"], {
                                     'Quarantine Starting Date': datetime.today().strftime('%Y-%m-%d')})
 
     return render_template('ordersplaced.html', contacts=ast.literal_eval(request.args.get('contacts')))
