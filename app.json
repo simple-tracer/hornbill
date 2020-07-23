@@ -4,4 +4,30 @@
   "repository": "https://github.com/simple-tracer/hornbill/",
   "logo": "hhttps://avatars0.githubusercontent.com/u/68422085?s=200&v=4",
   "keywords": ["flask", "simple tracer", "python"]
+  "env": {
+    "KEY": {
+            "description": "This is the key for encrypting user passwords, refer to setup docs for more info.",
+            "value": ""
+    },
+    "AIRTABLE_KEY": {
+            "description": "This is your Airtable API key, refer to setup docs for more info.",
+            "value": ""
+    },
+    "AIRTABLE_BASE": {
+            "description": "The Airtable Base ID for your Airtable, refer to setup docs for more info.",
+            "value": ""
+    },
+    "TWILIO_ACCOUNT_SID": {
+            "description": "Your Twilio account SID, refer to setup docs for more info.",
+            "value": ""
+    },
+    "TWILIO_AUTH_TOKEN": {
+            "description": "Your Twilio auth token, refer to setup docs for more info.",
+            "value": ""
+    },
+    "TWILIO_NOTIFY_SERVICE_SID": {
+            "description": "Your Twilio's notify service SID, refer to setup docs for more info.",
+            "value": ""
+    }
+  },
 }
