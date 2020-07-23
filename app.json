@@ -29,5 +29,5 @@
             "description": "Your Twilio's notify service SID, refer to setup docs for more info.",
             "value": ""
     }
-  },
+  }
 }
