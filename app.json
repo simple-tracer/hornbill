@@ -1,0 +1,7 @@
+{
+  "name": "Hornbill",
+  "description": "Admin tools for the Simple Tracer app.",
+  "repository": "https://github.com/simple-tracer/hornbill/",
+  "logo": "hhttps://avatars0.githubusercontent.com/u/68422085?s=200&v=4",
+  "keywords": ["flask", "simple tracer", "python"]
+}
