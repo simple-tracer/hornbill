@@ -125,18 +125,17 @@ def getContacts():
         return render_template('find_contacts.html')
 
     list1 = users_table.get_all(
-        filterByFormula='IF(FIND("' + request.form['idNo'] + '",Contacts)>0,TRUE(),FALSE())')
+        filterByFormula='IF(FIND("' + request.form['idNo'] + '",Contacts)>0,TRUE(),FALSE())') 
     list2 = users_table.get_all(
         filterByFormula='IF(FIND("' + request.form['idNo'] + '",{ID Number})>0,TRUE(),FALSE())')
     for i in list2[0]['fields']['Other Contacts']:
         list1.extend(ast.literal_eval('[{"fields":'+i+'}]'))
-    res = []
-    for i in list1:
-        if ", 'ID Number': '" + i["fields"]['ID Number'] not in str(res):
+    res = [] 
+    for i in list1: 
+        if ", 'ID Number': '" + i["fields"]['ID Number'] not in str(res): 
             res.append(i)
             print(str(res))
     return render_template('contacts.html', contacts=res, id=request.form['idNo'])
-
 
 @app.route('/issueqo', methods=['POST', 'GET'])
 @flask_login.login_required
@@ -152,7 +151,7 @@ def issueqo():
     )
     print(notification.body)
     for i in ast.literal_eval(request.args.get('contacts')):
-        users_table.update_by_field('ID Number', i['fields']["ID Number"], {
+        users_table.update_by_field('ID Number', i["fields"]["ID Number"], {
                                     'Quarantine Starting Date': datetime.today().strftime('%Y-%m-%d')})
 
     return render_template('ordersplaced.html', contacts=ast.literal_eval(request.args.get('contacts')))
