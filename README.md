@@ -4,7 +4,7 @@ Hornbill is a collection of tools for contact tracers to use collected data and 
 
 ## Usage
 
-Usage instructions found [here](https://github.com/simple-tracer/about#-stage-4-hornbill).
+Usage instructions found [here](https://github.com/simple-tracer/about#-stage-3-hornbill).
 
 ## Technology Used
 
