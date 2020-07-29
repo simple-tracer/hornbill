@@ -128,8 +128,9 @@ def getContacts():
         filterByFormula='IF(FIND("' + request.form['idNo'] + '",Contacts)>0,TRUE(),FALSE())') 
     list2 = users_table.get_all(
         filterByFormula='IF(FIND("' + request.form['idNo'] + '",{ID Number})>0,TRUE(),FALSE())')
-    for i in list2[0]['fields']['Other Contacts']:
-        list1.extend(ast.literal_eval('[{"fields":'+i+'}]'))
+    if 'Other Contacts' in list2[0]['fields']:
+        for i in list2[0]['fields']['Other Contacts']:
+            list1.extend(ast.literal_eval('[{"fields":'+i+'}]'))
     res = [] 
     for i in list1: 
         if ", 'ID Number': '" + i["fields"]['ID Number'] not in str(res): 
